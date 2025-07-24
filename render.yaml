@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: my-web-service
+    env: node # or python, ruby, etc.
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
+    pullRequestPreviewsEnabled: true
