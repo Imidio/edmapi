@@ -118,6 +118,33 @@ app.delete("/api/transactions/:id", async (req, res) => {
     }
 });
 
+app.put("/api/transactions/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, amount, category, user_id } = req.body;
+
+        if (isNaN(parseInt(id))) {
+            return res.status(400).json({ message: "Id Inválido!!" });
+        }
+
+        const result = await sql`
+            UPDATE transactions
+            SET title = ${title}, amount = ${amount}, category = ${category}
+            WHERE id = ${id}
+            RETURNING *
+        `;
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Não encontrado!!" });
+        }
+
+        res.status(200).json({ message: "Actualizado com sucesso!!!", updated: result[0] });
+    } catch (error) {
+        console.error("Falha ao actualizar Equipamento:", error);
+        res.status(500).json({ error: "Failed to update equipment." });
+    }
+});
+
 app.post("/api/transactions", async (req, res) => {
     try {
 
