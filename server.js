@@ -87,7 +87,7 @@ async function initDB() {
         await sql`
             CREATE TABLE IF NOT EXISTS subcategory(
                 id SERIAL PRIMARY KEY,
-                category_id numeric NOT NULL,
+                category_id int NOT NULL,
                 description VARCHAR(255) NOT NULL,
                 created_at DATE NOT NULL DEFAULT CURRENT_DATE
             )
