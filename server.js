@@ -34,6 +34,50 @@ async function initDB() {
             )
         `;
         await sql`
+        CREATE TABLE IF NOT EXISTS devices (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            type VARCHAR(50),
+            brand_id INT REFERENCES brands(id),
+            model_id INT REFERENCES models(id),
+            category_id INT REFERENCES categories(id),
+            power_watts INT,
+            voltage_volts INT,
+            location VARCHAR(100),
+            userId VARCHAR(100),
+            installation_date DATE,
+            status VARCHAR(20) DEFAULT 'Active'
+        );
+        `;
+
+        await sql`CREATE TABLE IF NOT EXISTS brands (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL
+        );`;
+        await sql`CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL
+        );`;
+        await sql`CREATE TABLE IF NOT EXISTS models (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        brand_id INT REFERENCES brands(id) ON DELETE CASCADE
+        );`;
+
+        await sql`
+        CREATE TABLE IF NOT EXISTS device_usage_logs (
+            id SERIAL PRIMARY KEY,
+            device_id INT REFERENCES devices(id) ON DELETE CASCADE,
+            start_time TIMESTAMP NOT NULL,
+            end_time TIMESTAMP NOT NULL,
+            power_watts INT NOT NULL, -- precisa ser salvo no momento do uso
+            duration_hours DECIMAL(5,2),
+            energy_kwh DECIMAL(10,3)
+        );
+        `;
+
+
+        await sql`
             CREATE TABLE IF NOT EXISTS category(
                 id SERIAL PRIMARY KEY,
                 description VARCHAR(255) NOT NULL,
@@ -183,6 +227,81 @@ app.post("/api/transactions", async (req, res) => {
         res.status(500).json({ message: "Falha ao inserir dados na BD" })
     }
 })
+
+//devices
+app.post('/api/devices', async (req, res) => {
+    const {
+        name,
+        brand_id,
+        model_id,
+        category_id,
+        type,
+        power_watts,
+        voltage_volts,
+        current_amperes,
+        location,
+        responsible_person,
+        installation_date,
+        status
+    } = req.body;
+
+    try {
+        const result = await sql`
+      INSERT INTO devices (
+        name, brand_id, model_id, category_id, type,
+        power_watts, voltage_volts, current_amperes, location,
+        responsible_person, installation_date, status
+      ) VALUES (
+        ${name}, ${brand_id}, ${model_id}, ${category_id}, ${type},
+        ${power_watts}, ${voltage_volts}, ${current_amperes}, ${location},
+        ${responsible_person}, ${installation_date}, ${status}
+      ) RETURNING *
+    `;
+        res.json(result[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao inserir equipamento.' });
+    }
+});
+
+
+//Brands
+app.post('/api/brands', async (req, res) => {
+    const { name } = req.body;
+    try {
+        const result = await sql`
+      INSERT INTO brands (name) VALUES (${name}) RETURNING *
+    `;
+        res.json(result[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao inserir marca.' });
+    }
+});
+
+//Categories
+app.post('/api/categories', async (req, res) => {
+    const { name } = req.body;
+    try {
+        const result = await sql`
+      INSERT INTO categories (name) VALUES (${name}) RETURNING *
+    `;
+        res.json(result[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao inserir categoria.' });
+    }
+});
+
+//models
+app.post('/api/models', async (req, res) => {
+    const { name, brand_id } = req.body;
+    try {
+        const result = await sql`
+      INSERT INTO models (name, brand_id) VALUES (${name}, ${brand_id}) RETURNING *
+    `;
+        res.json(result[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao inserir modelo.' });
+    }
+});
 
 app.get("/api/transactions/summary/:userId", async (req, res) => {
     try {
