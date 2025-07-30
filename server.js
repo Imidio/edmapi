@@ -47,22 +47,22 @@ async function initDB() {
             userId VARCHAR(100),
             installation_date DATE,
             status VARCHAR(20) DEFAULT 'Active'
-        );
+        )
         `;
 
         await sql`CREATE TABLE IF NOT EXISTS brands (
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) UNIQUE NOT NULL
-        );`;
+        )`;
         await sql`CREATE TABLE IF NOT EXISTS categories (
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) UNIQUE NOT NULL
-        );`;
+        )`;
         await sql`CREATE TABLE IF NOT EXISTS models (
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         brand_id INT REFERENCES brands(id) ON DELETE CASCADE
-        );`;
+        )`;
 
         await sql`
         CREATE TABLE IF NOT EXISTS device_usage_logs (
@@ -73,7 +73,7 @@ async function initDB() {
             power_watts INT NOT NULL, -- precisa ser salvo no momento do uso
             duration_hours DECIMAL(5,2),
             energy_kwh DECIMAL(10,3)
-        );
+        )
         `;
 
 
