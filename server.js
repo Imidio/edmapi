@@ -96,8 +96,8 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS st(
                 id SERIAL PRIMARY KEY,
                 description VARCHAR(255) NOT NULL,
-                category_id number NOT NULL,
-                subcategory_id number NOT NULL,
+                category_id int NOT NULL,
+                subcategory_id int NOT NULL,
                 capacity decimal(16,2) NOT NULL,
                 created_at DATE NOT NULL DEFAULT CURRENT_DATE
             )
