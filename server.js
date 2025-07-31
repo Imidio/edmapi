@@ -258,13 +258,12 @@ app.post('/api/brands', async (req, res) => {
 
 app.get("/api/brands", async (req, res) => {
     try {
-        const { userId } = req.params;
-        const transactions = await sql`
-            SELECT * FROM brands  ORDER BY created_at DESC
+        const brands = await sql`
+            SELECT * FROM brands
         `;
         console.log("Data:", 1);
 
-        res.status(200).json(transactions); // ✅ corrected
+        res.status(200).json(brands); // ✅ corrected
     } catch (error) {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
