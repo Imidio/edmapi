@@ -67,10 +67,10 @@ async function initDB() {
         )
         `;
 
-        
-        
 
-        
+
+
+
         await sql`
         CREATE TABLE IF NOT EXISTS device_usage_logs (
             id SERIAL PRIMARY KEY,
@@ -255,6 +255,21 @@ app.post('/api/brands', async (req, res) => {
         res.status(500).json({ error: 'Erro ao inserir marca.' });
     }
 });
+
+app.get("/api/brands", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const transactions = await sql`
+            SELECT * FROM brands  ORDER BY created_at DESC
+        `;
+        console.log("Data:", 1);
+
+        res.status(200).json(transactions); // ✅ corrected
+    } catch (error) {
+        console.error("Erro buscando dados:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 //Categories
 app.post('/api/categories', async (req, res) => {
