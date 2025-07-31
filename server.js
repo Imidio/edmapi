@@ -283,6 +283,20 @@ app.post('/api/categories', async (req, res) => {
     }
 });
 
+app.get("/api/categories", async (req, res) => {
+    try {
+        const categories = await sql`
+            SELECT * FROM categories
+        `;
+        console.log("Data:", 1);
+
+        res.status(200).json(categories); // ✅ corrected
+    } catch (error) {
+        console.error("Erro buscando dados:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
+
 //models
 app.post('/api/models', async (req, res) => {
     const { name, brand_id } = req.body;
@@ -295,6 +309,18 @@ app.post('/api/models', async (req, res) => {
         res.status(500).json({ error: 'Erro ao inserir modelo.' });
     }
 });
+
+app.get("/api/models", async (req, res) => {
+    try {
+        const models = await sql`
+            SELECT * FROM models
+        `;
+        res.status(200).json(models); // ✅ corrected
+    } catch (error) {
+        console.error("Erro buscando dados:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 app.get("/api/transactions/summary/:userId", async (req, res) => {
     try {
