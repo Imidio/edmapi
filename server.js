@@ -23,6 +23,23 @@ app.get("/", (req, res) => {
 
 async function initDB() {
     try {
+        await sql`CREATE TABLE IF NOT EXISTS brands (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL
+        )`;
+
+        await sql`CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL
+        )`;
+
+        await sql`CREATE TABLE IF NOT EXISTS models (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        brand_id INT REFERENCES brands(id) ON DELETE CASCADE
+        )`;
+
+
         await sql`
             CREATE TABLE IF NOT EXISTS transactions(
                 id SERIAL PRIMARY KEY,
@@ -50,20 +67,10 @@ async function initDB() {
         )
         `;
 
-        await sql`CREATE TABLE IF NOT EXISTS brands (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) UNIQUE NOT NULL
-        )`;
-        await sql`CREATE TABLE IF NOT EXISTS categories (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) UNIQUE NOT NULL
-        )`;
-        await sql`CREATE TABLE IF NOT EXISTS models (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        brand_id INT REFERENCES brands(id) ON DELETE CASCADE
-        )`;
+        
+        
 
+        
         await sql`
         CREATE TABLE IF NOT EXISTS device_usage_logs (
             id SERIAL PRIMARY KEY,
@@ -75,34 +82,6 @@ async function initDB() {
             energy_kwh DECIMAL(10,3)
         )
         `;
-
-
-        await sql`
-            CREATE TABLE IF NOT EXISTS category(
-                id SERIAL PRIMARY KEY,
-                description VARCHAR(255) NOT NULL,
-                created_at DATE NOT NULL DEFAULT CURRENT_DATE
-            )
-        `;
-        await sql`
-            CREATE TABLE IF NOT EXISTS subcategory(
-                id SERIAL PRIMARY KEY,
-                category_id int NOT NULL,
-                description VARCHAR(255) NOT NULL,
-                created_at DATE NOT NULL DEFAULT CURRENT_DATE
-            )
-        `;
-        await sql`
-            CREATE TABLE IF NOT EXISTS st(
-                id SERIAL PRIMARY KEY,
-                description VARCHAR(255) NOT NULL,
-                category_id int NOT NULL,
-                subcategory_id int NOT NULL,
-                capacity decimal(16,2) NOT NULL,
-                created_at DATE NOT NULL DEFAULT CURRENT_DATE
-            )
-        `;
-
         await sql`
             CREATE TABLE IF NOT EXISTS profile(
                 id SERIAL PRIMARY KEY,
