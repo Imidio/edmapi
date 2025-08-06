@@ -51,21 +51,22 @@ async function initDB() {
             )
         `;
         await sql`
-        CREATE TABLE IF NOT EXISTS devices (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            type VARCHAR(50),
-            brand_id INT REFERENCES brands(id),
-            model_id INT REFERENCES models(id),
-            category_id INT REFERENCES categories(id),
-            power_watts INT,
-            voltage_volts INT,
-            location VARCHAR(100),
-            userId VARCHAR(100),
-            installation_date DATE,
-            status VARCHAR(20) DEFAULT 'Active'
-        )
-        `;
+            CREATE TABLE IF NOT EXISTS devices (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                type VARCHAR(50),
+                brand_id INT REFERENCES brands(id),
+                model_id INT REFERENCES models(id),
+                category_id INT REFERENCES categories(id),
+                power_watts INT,
+                voltage_volts INT,
+                current_amperes INT,
+                location VARCHAR(100),
+                userId VARCHAR(100),
+                installation_date DATE,
+                status VARCHAR(20) DEFAULT 'Active'
+            )
+            `
 
 
 
