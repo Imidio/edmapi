@@ -237,6 +237,22 @@ app.put("/api/profile/:id", async (req, res) => {
     }
 }
 );
+
+app.get("/api/profile/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const profile = await sql`
+            SELECT * FROM profile WHERE user_id = ${userId} ORDER BY created_at DESC limit 1
+        `;
+        console.log("Data:", 1);
+
+        res.status(200).json(profile);
+    } catch (error) {
+        console.error("Erro buscando dados:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
+
 //devices
 app.post('/api/devices', async (req, res) => {
     const {
