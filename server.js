@@ -83,8 +83,8 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS profile(
                 id SERIAL PRIMARY KEY,
                 user_id VARCHAR(255) NOT NULL,
-                picture VARCHAR(255) NOT NULL,
-                age VARCHAR(255) NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                location VARCHAR(255) NOT NULL,
                 type VARCHAR(255) NOT NULL,
                 created_at DATE NOT NULL DEFAULT CURRENT_DATE
             )
@@ -202,8 +202,41 @@ app.post("/api/transactions", async (req, res) => {
         console.log("Erro ao inicializar BD: ", error);
         res.status(500).json({ message: "Falha ao inserir dados na BD" })
     }
-})
+});
 
+//Profile
+app.post("/api/profile", async (req, res) => {
+    try {
+        const { user_id, name, location, type } = req.body;
+
+        await sql`
+      INSERT INTO profile (user_id, name, location, type)
+      VALUES (${user_id}, ${name}, ${location}, ${type})
+    `;
+
+        res.status(201).json({ message: "Profile created successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Error creating profile" });
+    }
+});
+
+app.put("/api/profile/:id", async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const { name, location, type } = req.body;
+
+        await sql`
+            UPDATE profile
+            SET name = ${name}, location = ${location}, type = ${type}
+            WHERE user_id = ${user_id}
+            `;
+
+        res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Error updating profile" });
+    }
+}
+);
 //devices
 app.post('/api/devices', async (req, res) => {
     const {
