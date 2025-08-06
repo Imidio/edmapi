@@ -238,7 +238,8 @@ app.post('/api/devices', async (req, res) => {
     `;
         res.json(result[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao inserir equipamento.' });
+        console.error("Erro ao inserir equipamento:", error); // Logs full error in terminal
+        res.status(500).json({ error: error.message || 'Erro ao inserir equipamento.' });
     }
 });
 
@@ -261,9 +262,7 @@ app.get("/api/brands", async (req, res) => {
         const brands = await sql`
             SELECT * FROM brands
         `;
-        console.log("Data:", 1);
-
-        res.status(200).json(brands); // ✅ corrected
+        res.status(200).json(brands);
     } catch (error) {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -288,9 +287,7 @@ app.get("/api/categories", async (req, res) => {
         const categories = await sql`
             SELECT * FROM categories
         `;
-        console.log("Data:", 1);
-
-        res.status(200).json(categories); // ✅ corrected
+        res.status(200).json(categories);
     } catch (error) {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -315,7 +312,7 @@ app.get("/api/models", async (req, res) => {
         const models = await sql`
             SELECT * FROM models
         `;
-        res.status(200).json(models); // ✅ corrected
+        res.status(200).json(models);
     } catch (error) {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
