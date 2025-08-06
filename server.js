@@ -68,10 +68,6 @@ async function initDB() {
             )
             `
 
-
-
-
-
         await sql`
         CREATE TABLE IF NOT EXISTS device_usage_logs (
             id SERIAL PRIMARY KEY,
@@ -212,8 +208,8 @@ app.post("/api/transactions", async (req, res) => {
 app.post('/api/devices', async (req, res) => {
     const {
         name,
-        brand_id,
-        model_id,
+        brand,
+        model,
         category_id,
         type,
         power_watts,
@@ -228,11 +224,11 @@ app.post('/api/devices', async (req, res) => {
     try {
         const result = await sql`
       INSERT INTO devices (
-        name, brand_id, model_id, category_id, type,
+        name, brand, model, category_id, type,
         power_watts, voltage_volts, current_amperes, location,
         responsible_person, installation_date, status
       ) VALUES (
-        ${name}, ${brand_id}, ${model_id}, ${category_id}, ${type},
+        ${name}, ${brand}, ${model}, ${category_id}, ${type},
         ${power_watts}, ${voltage_volts}, ${current_amperes}, ${location},
         ${responsible_person}, ${installation_date}, ${status}
       ) RETURNING *
