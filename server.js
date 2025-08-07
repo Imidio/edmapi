@@ -222,13 +222,13 @@ app.post("/api/profile", async (req, res) => {
 
 app.put("/api/profile/:id", async (req, res) => {
     try {
-        const { user_id } = req.params;
+        const { id } = req.params;
         const { name, location, type } = req.body;
 
         await sql`
             UPDATE profile
-            SET name = ${name}, location = ${location}, type = ${type}
-            WHERE user_id = ${user_id}
+            SET name = ${name}, location = ${location}
+            WHERE user_id = ${id}
             `;
 
         res.status(200).json({ message: "Profile updated successfully" });
