@@ -227,7 +227,7 @@ app.put("/api/profile/:id", async (req, res) => {
 
         await sql`
             UPDATE profile
-            SET name = ${name}, location = ${location}
+            SET name = ${name}, location = ${location}, type = ${type}
             WHERE user_id = ${id}
             `;
 
