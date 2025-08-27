@@ -474,9 +474,12 @@ app.get("/api/transactions/summary/:userId", async (req, res) => {
             WHERE user_id = ${userId} AND amount > 0
         `;
 
+        const hours = 24; // exemplo: 5h/dia
+
         const expensesResult = await sql`
-            SELECT COALESCE(SUM(amount), 0) AS expenses FROM transactions 
-            WHERE user_id = ${userId} AND amount < 0
+            SELECT 
+                COALESCE(SUM(power_watts * ${hours}) / 1000, 0) AS consumption_kwh
+            FROM devices
         `;
 
         res.status(200).json({
