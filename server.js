@@ -462,20 +462,25 @@ app.get("/api/models", async (req, res) => {
 });
 
 app.get("/api/transactions/summary/:userId", async (req, res) => {
+    const hours = 24; // exemplo: 5h/dia
+    const pricePerKwh = 12; // exemplo: 14,5 MZN por kWh
+
     try {
         const { userId } = req.params;
 
         const balanceResult = await sql`
-            SELECT COALESCE(SUM(amount), 0) AS balance FROM transactions WHERE user_id = ${userId}
+            SELECT 
+                COALESCE(SUM(power_watts * ${hours}) / 1000, 0) AS balance
+            FROM devices      
+
         `;
+        //      SELECT COALESCE(SUM(amount), 0) AS balance FROM transactions WHERE user_id = ${userId}
 
         const incomeResult = await sql`
-            SELECT COALESCE(SUM(amount), 0) AS income FROM transactions 
-            WHERE user_id = ${userId} AND amount > 0
-        `;
-
-        const hours = 24; // exemplo: 5h/dia
-
+            SELECT
+             ((sum(power_watts) * ${hours})/1000) * ${pricePerKwh}  AS income
+            FROM devices       
+        `;       
         const expensesResult = await sql`
             SELECT 
                 COALESCE(SUM(power_watts * ${hours}) / 1000, 0) AS expenses
