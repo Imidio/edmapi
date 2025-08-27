@@ -3,9 +3,9 @@ import express from "express";
 import dotenv from "dotenv"
 import { sql } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js";
-const app = express()
+const app = express();
 
-const port = process.env.PORT || 5002
+const port = process.env.PORT || 5002;
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
     res.send("Funcionando");
-})
+});
 
 async function initDB() {
     try {
@@ -98,7 +98,7 @@ async function initDB() {
 
 app.get("/", (req, res) => {
 
-})
+});
 
 app.get("/api/transactions/:userId", async (req, res) => {
     try {
@@ -113,7 +113,7 @@ app.get("/api/transactions/:userId", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 app.get("/api/transactions/:transactionId/details", async (req, res) => {
     try {
@@ -128,7 +128,7 @@ app.get("/api/transactions/:transactionId/details", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 app.delete("/api/transactions/:id", async (req, res) => {
     try {
@@ -235,8 +235,7 @@ app.put("/api/profile/:id", async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Error updating profile" });
     }
-}
-);
+});
 
 app.get("/api/profile/:userId", async (req, res) => {
     try {
@@ -251,7 +250,7 @@ app.get("/api/profile/:userId", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 //devices
 app.post('/api/devices', async (req, res) => {
@@ -269,7 +268,6 @@ app.post('/api/devices', async (req, res) => {
         installation_date,
         status
     } = req.body;
-
     try {
         const result = await sql`
         INSERT INTO devices (
@@ -289,12 +287,11 @@ app.post('/api/devices', async (req, res) => {
     }
 });
 
-
 app.get("/api/devices/:userId", async (req, res) => {
     try {
         const { userId } = req.params;
         const devices = await sql`
-            SELECT * FROM devices WHERE responsable_person = ${userId} ORDER BY created_at DESC
+            SELECT * FROM devices WHERE responsable_person = ${userId} order by installation_date desc
         `;
         console.log("Data:", 1);
 
@@ -303,14 +300,12 @@ app.get("/api/devices/:userId", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
-
-
+});
 
 app.get("/api/devices", async (req, res) => {
     try {
         const devices = await sql`
-            SELECT * FROM devices ORDER BY created_at DESC
+            SELECT * FROM devices order by installation_date desc
         `;
         console.log("Data:", 1);
 
@@ -319,7 +314,7 @@ app.get("/api/devices", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 
 app.get("/api/devices/:deviceId/details", async (req, res) => {
@@ -335,7 +330,7 @@ app.get("/api/devices/:deviceId/details", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 
 app.delete("/api/devices/:id", async (req, res) => {
@@ -364,9 +359,9 @@ app.delete("/api/devices/:id", async (req, res) => {
 app.put("/api/devices/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, brand, category_id, type, power_watts, voltage_volts,current_amperes,
+        const { name, brand, category_id, type, power_watts, voltage_volts, current_amperes,
             location, installation_date, model, status
-         } = req.body;
+        } = req.body;
 
         if (isNaN(parseInt(id))) {
             return res.status(400).json({ message: "Id Inválido!!" });
@@ -377,14 +372,12 @@ app.put("/api/devices/:id", async (req, res) => {
             SET name = ${name}, brand = ${brand}, model = ${model}, category_id = ${category_id},
             type = ${type}, power_watts = ${power_watts}, voltage_volts = ${voltage_volts},
             current_amperes = ${current_amperes}, location = ${location}, installation_date = ${installation_date},
-            status = ${status}
-            WHERE id = ${id}
+            status = ${status} WHERE id = ${id}
             RETURNING *
         `;
         if (result.length === 0) {
             return res.status(404).json({ message: "Não encontrado!!" });
         }
-
         res.status(200).json({ message: "Actualizado com sucesso!!!", updated: result[0] });
     } catch (error) {
         console.error("Falha ao actualizar Equipamento:", error);
@@ -416,7 +409,7 @@ app.get("/api/brands", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 //Categories
 app.post('/api/categories', async (req, res) => {
@@ -441,7 +434,7 @@ app.get("/api/categories", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 //models
 app.post('/api/models', async (req, res) => {
@@ -466,7 +459,7 @@ app.get("/api/models", async (req, res) => {
         console.error("Erro buscando dados:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 
 app.get("/api/transactions/summary/:userId", async (req, res) => {
     try {
@@ -495,11 +488,11 @@ app.get("/api/transactions/summary/:userId", async (req, res) => {
         console.error("Error while calculating summary:", error);
         return res.status(500).json({ error: "Failed to retrieve summary." });
     }
-})
+});
 
 initDB().then(() => {
     app.listen(port, () => {
         console.log("Servidor correndo na porta: ", port);
     })
-})
+});
 
