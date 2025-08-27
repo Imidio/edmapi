@@ -478,7 +478,7 @@ app.get("/api/transactions/summary/:userId", async (req, res) => {
 
         const expensesResult = await sql`
             SELECT 
-                COALESCE(SUM(power_watts * ${hours}) / 1000, 0) AS consumption_kwh
+                COALESCE(SUM(power_watts * ${hours}) / 1000, 0) AS expenses
             FROM devices
         `;
 
