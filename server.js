@@ -1,10 +1,10 @@
 //const express = require("express")
 import express from "express";
 import dotenv from "dotenv"
-//import { sql } from "./config/db.js"
+import { sql } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js";
 
-import { pool } from "./config/db.js";
+//import { pool } from "./config/db.js";
 
 const app = express();
 
@@ -12,7 +12,7 @@ const port = process.env.PORT || 5002;
 
 dotenv.config();
 
-async function initDB1() {
+/* async function initDB1() {
   try {
     const res = await pool.query("SELECT NOW()");
     console.log("Banco conectado:", res.rows[0]);
@@ -22,28 +22,11 @@ async function initDB1() {
   }
 }
 
-initDB1();
+initDB1(); */
 
 
 // Função helper para queries usando template literals
-export async function sql(strings, ...values) {
-    try {
-        // Monta query com placeholders $1, $2, ...
-        let text = strings[0];
-        const params = [];
 
-        for (let i = 0; i < values.length; i++) {
-            text += `$${i + 1}` + strings[i + 1];
-            params.push(values[i]);
-        }
-
-        const result = await pool.query(text, params);
-        return result.rows;
-    } catch (err) {
-        console.error("Erro na query:", err);
-        throw err;
-    }
-}
 
 
 
